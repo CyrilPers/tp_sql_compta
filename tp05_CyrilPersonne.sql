@@ -70,10 +70,11 @@ WHERE NOT EXISTS (
 
 SELECT f.NOM AS nom_fournisseur, AVG(total_commande) AS commande_moyenne
 FROM ( 
-	SELECT b.ID, SUM(c.QTE * a.PRIX) AS total_commande FROM bon b
+	SELECT a.ID_FOU AS idFou, b.ID, SUM(c.QTE * a.PRIX) AS total_commande FROM bon b
 	JOIN compo c ON b.id = c.ID_BON
 	JOIN article a ON c.ID_ART = a.ID 
-	GROUP BY b.ID;
-)
-JOIN fournisseur f ON a.ID_FOU = f.id
-GROUP BY f.NOM ;
+	GROUP BY b.ID, a.ID_FOU
+) AS total
+JOIN fournisseur f ON total.idFou = f.ID
+GROUP BY f.NOM;
+
